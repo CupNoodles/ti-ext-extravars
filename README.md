@@ -17,6 +17,6 @@ Once you do, you'll be able to edit those fields on either the Menu or Location 
 
 To actually use the new value, call the new `->getExtraVarValue()` function on your model from within a template partial. 
 
-For example, to create a new 'subtitle' element on a menu item, set 'slug' to 'my_new_menu_subtitle', save a string value into the menu item as the new subtitle, and then in `<your_template>/_partials/menu/item.blade.php` display the new value with `{{ $menuItem->getExtraVarValue('subtitle') }}`.
+For example, to create a new 'subtitle' element on a menu item, set 'slug' to 'my_new_menu_subtitle', save a string value into the menu item as the new subtitle, and then in `<your_template>/_partials/menu/item.blade.php` display the new value with `{{ $menuItem->getExtraVarValue('my_new_menu_subtitle') }}`.
 
 Usage Note: all values are saved as a string with max length 128 and have absolutely no sanitization done to them at all. This means it's easy to break your own template if you inject malformed html into a `string` type field and display it, but it's kept this way for the added flexibility it can add. You can, for instance, add extra images to a menu item by saving upload urls, or even create new CSS classnames to apply to individual menu items or locations, and then edit those within the admin menu. 
