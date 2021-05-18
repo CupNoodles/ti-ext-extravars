@@ -1,0 +1,16 @@
+{
+    "code": "cupnoodles.extravars",
+    "name": "Extra Menu Vars",
+    "description": "Add Extra Vars to Menu or Location",
+    "version": "v1.0.0",
+    "author": "CupNoodles",
+    "icon": {
+      "class": "far fa-plus-square",
+      "backgroundColor": "#1B294B",
+      "color": "#fff"
+    },
+    "homepage": "",
+    "require": {
+      "igniter.cart" : "*"
+    }
+  }
