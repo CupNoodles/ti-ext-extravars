@@ -43,32 +43,27 @@ class Extension extends BaseExtension
     public function boot()
     {
 
-        Menus_Model::extend(function ($model) {
-
+        Menus_Model::saved(function ($model) {
             // save to the extra vars table instead of menus model
-            $model->bindEvent('model.saveInternal', function($data) use ($model){
-                foreach(ExtraVars::where('class', 'Menu')->get() as $ix=>$extra_var){
-                    $attr = $model->getAttributes();
-                    ExtraVarValues::updateOrCreate(
-                        [
-                            'extra_vars_id' => $extra_var->extra_vars_id,
-                            'object_id' => $data['menu_id']
-                        ],
-                        [
-                            'value' => $attr[$extra_var->slug]
-                        ]
-                        );
-                    unset($attr[$extra_var->slug]);
-                    $model->setRawAttributes($attr, true);
+            foreach(ExtraVars::where('class', 'Menu')->get() as $ix=>$extra_var){
+                $post_data = post();
+                ExtraVarValues::updateOrCreate(
+                    [
+                        'extra_vars_id' => $extra_var->extra_vars_id,
+                        'object_id' => $model->menu_id
+                    ],
+                    [
+                        'value' => $post_data['Menu']['_'.$extra_var->slug]
+                    ]
+                    );
+            }
+        });
 
-                }
-
-            });
-
+        Menus_Model::extend(function ($model) {
             $model->addDynamicMethod('getExtraVarValue', function($slug) use ($model) {
                 $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
                 ->where([
-                    ['extra_var_values.object_id', $model->menu_id],
+                    ['extra_var_values.object_id', $model->manu_id],
                     ['extra_vars.slug', $slug]
                 ])->first();
                 if(isset($evv->value)){
@@ -79,28 +74,23 @@ class Extension extends BaseExtension
             });
         });
 
-        Categories_Model::extend(function ($model) {
-
+        Categories_Model::saved(function ($model) {
             // save to the extra vars table instead of menus model
-            $model->bindEvent('model.saveInternal', function($data) use ($model){
-                foreach(ExtraVars::where('class', 'Category')->get() as $ix=>$extra_var){
-                    $attr = $model->getAttributes();
-                    ExtraVarValues::updateOrCreate(
-                        [
-                            'extra_vars_id' => $extra_var->extra_vars_id,
-                            'object_id' => $data['category_id']
-                        ],
-                        [
-                            'value' => $attr[$extra_var->slug]
-                        ]
-                        );
-                    unset($attr[$extra_var->slug]);
-                    $model->setRawAttributes($attr, true);
+            foreach(ExtraVars::where('class', 'Category')->get() as $ix=>$extra_var){
+                $post_data = post();
+                ExtraVarValues::updateOrCreate(
+                    [
+                        'extra_vars_id' => $extra_var->extra_vars_id,
+                        'object_id' => $model->category_id
+                    ],
+                    [
+                        'value' => $post_data['Category']['_'.$extra_var->slug]
+                    ]
+                    );
+            }
+        });
 
-                }
-
-            });
-
+        Categories_Model::extend(function ($model) {
             $model->addDynamicMethod('getExtraVarValue', function($slug) use ($model) {
                 $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
                 ->where([
@@ -115,27 +105,23 @@ class Extension extends BaseExtension
             });
         });
 
+        Locations_Model::saved(function ($model) {
+            // save to the extra vars table instead of menus model
+            foreach(ExtraVars::where('class', 'Location')->get() as $ix=>$extra_var){
+                $post_data = post();
+                ExtraVarValues::updateOrCreate(
+                    [
+                        'extra_vars_id' => $extra_var->extra_vars_id,
+                        'object_id' => $model->location_id
+                    ],
+                    [
+                        'value' => $post_data['Location']['_'.$extra_var->slug]
+                    ]
+                    );
+            }
+        });
+
         Locations_Model::extend(function ($model) {
-
-            // save to the extra vars table instead of locations model
-            $model->bindEvent('model.saveInternal', function($data) use ($model){
-                foreach(ExtraVars::where('class', 'Location')->get() as $ix=>$extra_var){
-                    $attr = $model->getAttributes();
-                    $user = ExtraVarValues::updateOrCreate(
-                        [
-                            'extra_vars_id' => $extra_var->extra_vars_id,
-                            'object_id' => $data['location_id']
-                        ],
-                        [
-                            'value' => $attr[$extra_var->slug]
-                        ]
-                        );
-                    unset($attr[$extra_var->slug]);
-                    $model->setRawAttributes($attr, true);
-                }
-
-            });
-
             $model->addDynamicMethod('getExtraVarValue', function($slug) use ($model) {
                 $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
                 ->where([
@@ -148,7 +134,6 @@ class Extension extends BaseExtension
                 return '';
                 
             });
-
         });
 
 
@@ -167,7 +152,7 @@ class Extension extends BaseExtension
                         ['extra_vars_id', $extra_var->extra_vars_id]
                     ])->first();
                     
-                    $form->tabs['fields'][$extra_var->slug] = [
+                    $form->tabs['fields']['_' . $extra_var->slug] = [
                         'label' => $extra_var->name,
                         'type' => $field_type,
                         'default' => isset($evv->value) ? $evv->value : ''
@@ -176,7 +161,7 @@ class Extension extends BaseExtension
             }
 
             if($form->model instanceof Categories_model){
-                
+
                 foreach(ExtraVars::where('class', 'Category')->get() as $ix=>$extra_var){
                     switch ($extra_var->type){
                         case 'String': $field_type = 'text'; break;
@@ -187,13 +172,14 @@ class Extension extends BaseExtension
                         ['object_id', $form->model->category_id],
                         ['extra_vars_id', $extra_var->extra_vars_id]
                     ])->first();
-                    
-                    $form->tabs['fields'][$extra_var->slug] = [
+
+                    $form->tabs['fields']['_' . $extra_var->slug] = [
                         'label' => $extra_var->name,
                         'type' => $field_type,
                         'default' => isset($evv->value) ? $evv->value : ''
                     ];
                 }
+
             }
 
             if($form->model instanceof Locations_model){
@@ -209,7 +195,7 @@ class Extension extends BaseExtension
                         ['extra_vars_id', $extra_var->extra_vars_id]
                     ])->first();
 
-                    $form->tabs['fields'][$extra_var->slug] = [
+                    $form->tabs['fields']['_' . $extra_var->slug] = [
                         'label' => $extra_var->name,
                         'type' => $field_type,
                         'default' => isset($evv->value) ? $evv->value : ''
