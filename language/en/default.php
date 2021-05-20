@@ -11,6 +11,7 @@ return [
 
     'menu' => 'Menu',
     'location' => 'Location',
+    'category' => 'Category',
     'string' => 'string',
     'int' => 'int',
     'bool' => 'bool',

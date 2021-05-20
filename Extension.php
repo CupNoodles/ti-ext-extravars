@@ -8,6 +8,7 @@ use System\Classes\ExtensionManager;
 use Event;
 use Admin\Models\Menus_model;
 use Admin\Models\Locations_model;
+use Admin\Models\Categories_model;
 
 use Admin\Widgets\Form;
 use Admin\Classes\AdminController;
@@ -78,6 +79,42 @@ class Extension extends BaseExtension
             });
         });
 
+        Categories_Model::extend(function ($model) {
+
+            // save to the extra vars table instead of menus model
+            $model->bindEvent('model.saveInternal', function($data) use ($model){
+                foreach(ExtraVars::where('class', 'Category')->get() as $ix=>$extra_var){
+                    $attr = $model->getAttributes();
+                    ExtraVarValues::updateOrCreate(
+                        [
+                            'extra_vars_id' => $extra_var->extra_vars_id,
+                            'object_id' => $data['category_id']
+                        ],
+                        [
+                            'value' => $attr[$extra_var->slug]
+                        ]
+                        );
+                    unset($attr[$extra_var->slug]);
+                    $model->setRawAttributes($attr, true);
+
+                }
+
+            });
+
+            $model->addDynamicMethod('getExtraVarValue', function($slug) use ($model) {
+                $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
+                ->where([
+                    ['extra_var_values.object_id', $model->category_id],
+                    ['extra_vars.slug', $slug]
+                ])->first();
+                if(isset($evv->value)){
+                    return $evv->value;
+                }
+                return '';
+                
+            });
+        });
+
         Locations_Model::extend(function ($model) {
 
             // save to the extra vars table instead of locations model
@@ -127,6 +164,27 @@ class Extension extends BaseExtension
                     }
                     $evv = ExtraVarValues::where([
                         ['object_id', $form->model->menu_id],
+                        ['extra_vars_id', $extra_var->extra_vars_id]
+                    ])->first();
+                    
+                    $form->tabs['fields'][$extra_var->slug] = [
+                        'label' => $extra_var->name,
+                        'type' => $field_type,
+                        'default' => isset($evv->value) ? $evv->value : ''
+                    ];
+                }
+            }
+
+            if($form->model instanceof Categories_model){
+                
+                foreach(ExtraVars::where('class', 'Category')->get() as $ix=>$extra_var){
+                    switch ($extra_var->type){
+                        case 'String': $field_type = 'text'; break;
+                        case 'Int': $field_type = 'number'; break;
+                        case 'Bool': $field_type = 'switch'; break;
+                    }
+                    $evv = ExtraVarValues::where([
+                        ['object_id', $form->model->category_id],
                         ['extra_vars_id', $extra_var->extra_vars_id]
                     ])->first();
                     

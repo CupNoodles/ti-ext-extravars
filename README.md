@@ -1,6 +1,6 @@
 ## TI Extra Vars Extension
 
-Adds extra variables to Menu Items that can be edited in Menu Admin, and queried from a template file. 
+Adds extra variables to Menu/Category/Location items that can be edited in Menu Admin, and queried from a template file. 
 
 ## Installation
 

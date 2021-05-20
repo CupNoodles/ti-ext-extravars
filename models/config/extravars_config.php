@@ -92,6 +92,7 @@ $config['form']['tabs'] = [
             'span' => 'left',
             'options' => [
                 'Menu' => 'lang:cupnoodles.extravars::default.menu',
+                'Category' => 'lang:cupnoodles.extravars::default.category',
                 'Location' => 'lang:cupnoodles.extravars::default.location',
             ],
         ],
