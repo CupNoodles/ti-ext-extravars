@@ -63,7 +63,7 @@ class Extension extends BaseExtension
             $model->addDynamicMethod('getExtraVarValue', function($slug) use ($model) {
                 $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
                 ->where([
-                    ['extra_var_values.object_id', $model->manu_id],
+                    ['extra_var_values.object_id', $model->menu_id],
                     ['extra_vars.slug', $slug]
                 ])->first();
                 if(isset($evv->value)){
