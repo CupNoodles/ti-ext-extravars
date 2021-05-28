@@ -64,7 +64,8 @@ class Extension extends BaseExtension
                 $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
                 ->where([
                     ['extra_var_values.object_id', $model->menu_id],
-                    ['extra_vars.slug', $slug]
+                    ['extra_vars.slug', $slug],
+                    ['extra_vars.class', 'Menu']
                 ])->first();
                 if(isset($evv->value)){
                     return $evv->value;
@@ -95,7 +96,8 @@ class Extension extends BaseExtension
                 $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
                 ->where([
                     ['extra_var_values.object_id', $model->category_id],
-                    ['extra_vars.slug', $slug]
+                    ['extra_vars.slug', $slug],
+                    ['extra_vars.class', 'Category']
                 ])->first();
                 if(isset($evv->value)){
                     return $evv->value;
@@ -126,7 +128,8 @@ class Extension extends BaseExtension
                 $evv = ExtraVarValues::join('extra_vars', 'extra_vars.extra_vars_id', '=', 'extra_var_values.extra_vars_id')
                 ->where([
                     ['extra_var_values.object_id', $model->location_id],
-                    ['extra_vars.slug', $slug]
+                    ['extra_vars.slug', $slug],
+                    ['extra_vars.class', 'Location']
                 ])->first();
                 if(isset($evv->value)){
                     return $evv->value;
