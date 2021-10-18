@@ -47,15 +47,17 @@ class Extension extends BaseExtension
             // save to the extra vars table instead of menus model
             foreach(ExtraVars::where('class', 'Menu')->get() as $ix=>$extra_var){
                 $post_data = post();
-                ExtraVarValues::updateOrCreate(
-                    [
-                        'extra_vars_id' => $extra_var->extra_vars_id,
-                        'object_id' => $model->menu_id
-                    ],
-                    [
-                        'value' => $post_data['Menu']['_'.$extra_var->slug]
-                    ]
-                    );
+                if(array_key_exists('_'.$extra_var->slug, $post_data['Location'])){
+                    ExtraVarValues::updateOrCreate(
+                        [
+                            'extra_vars_id' => $extra_var->extra_vars_id,
+                            'object_id' => $model->menu_id
+                        ],
+                        [
+                            'value' => $post_data['Menu']['_'.$extra_var->slug]
+                        ]
+                        );
+                }
             }
         });
 
@@ -79,15 +81,17 @@ class Extension extends BaseExtension
             // save to the extra vars table instead of menus model
             foreach(ExtraVars::where('class', 'Category')->get() as $ix=>$extra_var){
                 $post_data = post();
-                ExtraVarValues::updateOrCreate(
-                    [
-                        'extra_vars_id' => $extra_var->extra_vars_id,
-                        'object_id' => $model->category_id
-                    ],
-                    [
-                        'value' => $post_data['Category']['_'.$extra_var->slug]
-                    ]
-                    );
+                if(array_key_exists('_'.$extra_var->slug, $post_data['Location'])){
+                    ExtraVarValues::updateOrCreate(
+                        [
+                            'extra_vars_id' => $extra_var->extra_vars_id,
+                            'object_id' => $model->category_id
+                        ],
+                        [
+                            'value' => $post_data['Category']['_'.$extra_var->slug]
+                        ]
+                        );
+                }
             }
         });
 
@@ -111,7 +115,8 @@ class Extension extends BaseExtension
             // save to the extra vars table instead of menus model
             foreach(ExtraVars::where('class', 'Location')->get() as $ix=>$extra_var){
                 $post_data = post();
-                ExtraVarValues::updateOrCreate(
+                if(array_key_exists('_'.$extra_var->slug, $post_data['Location'])){
+                    ExtraVarValues::updateOrCreate(
                     [
                         'extra_vars_id' => $extra_var->extra_vars_id,
                         'object_id' => $model->location_id
@@ -120,6 +125,7 @@ class Extension extends BaseExtension
                         'value' => $post_data['Location']['_'.$extra_var->slug]
                     ]
                     );
+                }
             }
         });
 
