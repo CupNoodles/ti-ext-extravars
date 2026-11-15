@@ -1,0 +1,49 @@
+{
+    "name": "cupnoodles/ti-ext-extravars",
+    "type": "tastyigniter-package",
+    "license": "MIT",
+    "description": "Add your own fields to menu items, categories and locations, edit them in the admin and use them in your theme.",
+    "authors": [
+        {
+            "name": "CupNoodles"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "tastyigniter/core": "^v4.0",
+        "tastyigniter/ti-ext-cart": "^v4.0",
+        "tastyigniter/ti-ext-local": "^v4.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "CupNoodles\\ExtraVars\\": "src/"
+        }
+    },
+    "extra": {
+        "tastyigniter-extension": {
+            "code": "cupnoodles.extravars",
+            "name": "Extra Vars",
+            "icon": {
+                "class": "fa fa-square-plus",
+                "color": "#FFFFFF",
+                "backgroundColor": "#1B294B"
+            },
+            "homepage": "https://github.com/CupNoodles/ti-ext-extravars"
+        },
+        "branch-alias": {
+            "dev-master": "4.0.x-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "test:lint": "vendor/bin/pint --test --ansi",
+        "test:lint-fix": "vendor/bin/pint --ansi"
+    }
+}
